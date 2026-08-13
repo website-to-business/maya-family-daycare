@@ -1,0 +1,1346 @@
+<!doctype html>
+<!--
+  Maya Family Daycare — single-file site.
+
+  HOW TO EDIT THIS FILE
+  ---------------------
+  Everything a human needs to change lives in the CONTENT object right below
+  the <style> block. Text, phone number, hours, photo filenames — all of it.
+  The markup and the script further down never contain a hard-coded string or
+  image path, so you should never have to hunt through the HTML.
+
+  To change a photo: overwrite the file in assets/ keeping the SAME filename.
+  No edit to this file is needed.
+
+  Anything marked [PLACEHOLDER] is invented sample copy and must be replaced
+  before this site is shown to parents. While DRAFT.enabled is true, those
+  spots are also flagged visually on the page itself.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#fff9f3">
+<!-- Static fallback title (business name only, so it can't drift out of sync
+     with the copy). The full localized title is set from CONTENT by the script. -->
+<title>Maya Family Daycare</title>
+<style>
+  /* ---------------------------------------------------------------------
+     Design tokens. The palette nods to the pink/purple/blue of the existing
+     logo and the jungle wall motif without matching their exact saturation.
+     --------------------------------------------------------------------- */
+  :root{
+    --cream:#fff9f3;
+    --cream-deep:#fdeee2;
+    --ink:#2c2140;
+    --muted:#6c6180;
+    --pink:#ef5f96;
+    --pink-deep:#d63f7b;
+    --purple:#7a58c9;
+    --purple-deep:#5d3ea6;
+    --blue:#2f9fd6;
+    --sun:#ffc24b;
+    --leaf:#3f9c74;
+    --line:rgba(44,33,64,.12);
+    --card:#ffffff;
+    --shadow-sm:0 1px 2px rgba(44,33,64,.06), 0 2px 8px rgba(44,33,64,.05);
+    --shadow-md:0 2px 6px rgba(44,33,64,.06), 0 12px 28px rgba(44,33,64,.09);
+    --r-sm:12px; --r-md:18px; --r-lg:28px; --r-xl:36px;
+    --pad:20px;
+    --bar-h:72px; /* height of the fixed mobile call bar */
+  }
+
+  *,*::before,*::after{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;
+    background:var(--cream);
+    color:var(--ink);
+    font:400 17px/1.65 ui-rounded,"SF Pro Rounded",-apple-system,BlinkMacSystemFont,"Segoe UI",Nunito,"Trebuchet MS",system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  /* Room for the fixed call bar on phones so the footer isn't covered. */
+  body{padding-bottom:calc(var(--bar-h) + env(safe-area-inset-bottom,0px))}
+  img{max-width:100%;display:block}
+  a{color:var(--purple-deep)}
+  h1,h2,h3{line-height:1.15;margin:0;letter-spacing:-.02em;font-weight:800}
+  h1{font-size:clamp(31px,7.4vw,54px)}
+  h2{font-size:clamp(25px,5.4vw,38px)}
+  h3{font-size:clamp(19px,3.4vw,22px)}
+  p{margin:0}
+  :focus-visible{outline:3px solid var(--purple);outline-offset:3px;border-radius:6px}
+
+  .wrap{width:100%;max-width:1080px;margin:0 auto;padding:0 var(--pad)}
+  .section{padding:56px 0}
+  .section > .wrap > * + *{margin-top:22px}
+  .lead{color:var(--muted);font-size:clamp(17px,2.4vw,19px);max-width:60ch}
+  .kicker{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:13px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--purple-deep);
+  }
+  .kicker::before{content:"";width:22px;height:3px;border-radius:3px;background:var(--pink)}
+
+  /* ---------- header ---------- */
+  header{
+    position:sticky;top:0;z-index:40;
+    background:rgba(255,249,243,.88);
+    backdrop-filter:saturate(150%) blur(10px);
+    -webkit-backdrop-filter:saturate(150%) blur(10px);
+    border-bottom:1px solid transparent;
+    transition:border-color .2s ease, box-shadow .2s ease;
+  }
+  header.is-stuck{border-bottom-color:var(--line);box-shadow:0 6px 20px rgba(44,33,64,.05)}
+  .bar{display:flex;align-items:center;gap:12px;min-height:64px}
+  .brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;margin-right:auto;min-width:0}
+  .brand .mark{
+    width:38px;height:38px;flex:none;border-radius:13px;
+    background:linear-gradient(140deg,var(--pink),var(--purple) 55%,var(--blue));
+    display:grid;place-items:center;color:#fff;font-weight:900;font-size:17px;
+    box-shadow:var(--shadow-sm);
+  }
+  .brand .name{font-weight:800;font-size:16px;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+  /* Language toggle — always visible, at the top and again in the footer. */
+  .lang{display:inline-flex;background:rgba(122,88,201,.10);border-radius:999px;padding:3px;flex:none}
+  .lang button{
+    appearance:none;border:0;background:transparent;cursor:pointer;
+    font:inherit;font-size:14px;font-weight:700;color:var(--purple-deep);
+    padding:10px 15px;border-radius:999px;min-height:44px;
+  }
+  .lang button[aria-pressed="true"]{background:#fff;color:var(--ink);box-shadow:var(--shadow-sm)}
+  .footer .lang{background:rgba(255,255,255,.14)}
+  .footer .lang button{color:rgba(255,255,255,.85)}
+  .footer .lang button[aria-pressed="true"]{background:rgba(255,255,255,.95);color:var(--ink)}
+
+  /* ---------- buttons ---------- */
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:10px;
+    font:inherit;font-weight:800;text-decoration:none;cursor:pointer;
+    padding:15px 22px;min-height:54px;border-radius:999px;border:2px solid transparent;
+    transition:transform .12s ease, box-shadow .2s ease, background-color .2s ease;
+    text-align:center;
+  }
+  .btn:active{transform:translateY(1px)}
+  .btn svg{width:20px;height:20px;flex:none}
+  .btn-call{
+    background:linear-gradient(135deg,var(--pink),var(--purple-deep));
+    color:#fff;box-shadow:0 8px 22px rgba(122,88,201,.34);font-size:19px;padding:17px 28px;min-height:60px;
+  }
+  .btn-wa{background:#eaf7f0;color:#1c6b48;border-color:rgba(31,138,90,.22)}
+  .btn-ghost{background:#fff;color:var(--ink);border-color:var(--line);box-shadow:var(--shadow-sm)}
+  .btn-head{display:none}
+  .btn-block{width:100%}
+
+  /* ---------- hero ---------- */
+  .hero{position:relative;padding:34px 0 46px;overflow:hidden}
+  .hero::before,.hero::after{content:"";position:absolute;border-radius:50%;filter:blur(46px);opacity:.5;pointer-events:none;z-index:0}
+  .hero::before{width:340px;height:340px;background:rgba(239,95,150,.30);top:-140px;right:-110px}
+  .hero::after{width:300px;height:300px;background:rgba(47,159,214,.24);bottom:-150px;left:-120px}
+  .hero .wrap{position:relative;z-index:1}
+  .hero h1{margin-top:14px}
+  .hero h1 em{font-style:normal;color:var(--purple-deep)}
+  .hero .lead{margin-top:14px}
+  .hero-cta{display:flex;flex-direction:column;gap:10px;margin-top:26px}
+  .hero-note{font-size:14px;color:var(--muted);display:flex;align-items:center;gap:8px;margin-top:4px}
+  .dot{width:9px;height:9px;border-radius:50%;background:var(--leaf);flex:none;box-shadow:0 0 0 4px rgba(63,156,116,.18)}
+  .dot.is-closed{background:var(--muted);box-shadow:0 0 0 4px rgba(108,97,128,.16)}
+  .hero-photo{margin-top:30px;border-radius:var(--r-xl);overflow:hidden;box-shadow:var(--shadow-md);transform:rotate(-.5deg)}
+  .hero-photo .ph{aspect-ratio:4/3}
+
+  /* ---------- photo placeholder ---------- */
+  /* Until the real photos land in assets/, a missing file renders as a
+     labelled panel instead of a broken-image icon. Harmless once the real
+     files exist — the fallback only shows on load error. */
+  .ph{position:relative;background:var(--cream-deep);overflow:hidden}
+  .ph img{width:100%;height:100%;object-fit:cover}
+  .ph.is-missing{
+    background:
+      repeating-linear-gradient(135deg,rgba(122,88,201,.07) 0 12px,rgba(122,88,201,.13) 12px 24px),
+      var(--cream-deep);
+    display:grid;place-items:center;padding:22px;min-height:180px;
+  }
+  .ph.is-missing img{display:none}
+  .ph-label{
+    text-align:center;font-size:13px;font-weight:700;color:var(--purple-deep);
+    background:rgba(255,255,255,.9);border-radius:var(--r-sm);padding:10px 14px;
+    max-width:26ch;line-height:1.4;box-shadow:var(--shadow-sm);
+  }
+
+  /* ---------- at a glance ---------- */
+  .glance{display:grid;gap:12px}
+  .g-card{
+    background:var(--card);border-radius:var(--r-md);padding:18px 18px 20px;
+    box-shadow:var(--shadow-sm);border:1px solid var(--line);
+    display:flex;gap:14px;align-items:flex-start;
+  }
+  .g-icon{width:42px;height:42px;flex:none;border-radius:13px;display:grid;place-items:center;background:rgba(122,88,201,.12);color:var(--purple-deep)}
+  .g-icon svg{width:22px;height:22px}
+  .g-card:nth-child(2) .g-icon{background:rgba(239,95,150,.13);color:var(--pink-deep)}
+  .g-card:nth-child(3) .g-icon{background:rgba(47,159,214,.13);color:#1c6f97}
+  .g-card:nth-child(4) .g-icon{background:rgba(63,156,116,.14);color:#2b7a58}
+  .g-label{font-size:12.5px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+  .g-value{margin-top:3px;font-weight:700}
+  .g-note{margin-top:2px;font-size:14.5px;color:var(--muted);font-weight:400}
+
+  .hours-list{margin:0;padding:0;list-style:none;font-size:15.5px}
+  .hours-list li{display:flex;justify-content:space-between;gap:12px;padding:3px 0}
+  .hours-list .d{color:var(--muted);min-width:0}
+  .hours-list .t{font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+  .hours-list li.is-today .d,.hours-list li.is-today .t{color:var(--purple-deep)}
+
+  /* ---------- the space ---------- */
+  .space{background:linear-gradient(180deg,var(--cream) 0%,var(--cream-deep) 42%,var(--cream) 100%)}
+  .gallery{display:grid;gap:14px}
+  .g-item{background:var(--card);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow-md);border:1px solid var(--line)}
+  .g-item .ph{aspect-ratio:4/3}
+  .g-item figcaption{padding:14px 18px 17px;font-size:15px;color:var(--muted)}
+  .g-item figcaption b{display:block;color:var(--ink);font-size:16.5px;margin-bottom:2px}
+  .feature-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px;padding:0;list-style:none}
+  .feature-chips li{
+    background:#fff;border:1px solid var(--line);border-radius:999px;
+    padding:9px 15px;font-size:14.5px;font-weight:700;box-shadow:var(--shadow-sm);
+  }
+
+  /* ---------- programs ---------- */
+  .programs{display:grid;gap:16px}
+  .p-card{
+    position:relative;background:var(--card);border-radius:var(--r-lg);
+    padding:24px 22px;box-shadow:var(--shadow-sm);border:1px solid var(--line);
+    border-top:5px solid var(--pink);
+  }
+  .p-card:nth-child(2){border-top-color:var(--sun)}
+  .p-card:nth-child(3){border-top-color:var(--blue)}
+  .p-age{font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+  .p-card h3{margin:6px 0 8px}
+  .p-list{margin:14px 0 0;padding:0;list-style:none;display:grid;gap:8px;font-size:15.5px}
+  .p-list li{display:flex;gap:9px;align-items:flex-start;color:var(--muted)}
+  .p-list li::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--leaf);flex:none;margin-top:8px}
+
+  /* ---------- meals ---------- */
+  .meals .wrap{
+    background:linear-gradient(135deg,rgba(255,194,75,.18),rgba(239,95,150,.13));
+    border:1px solid var(--line);border-radius:var(--r-xl);padding:30px 22px;max-width:1040px;
+  }
+  .meals .wrap > * + *{margin-top:14px}
+
+  /* ---------- about / testimonials ---------- */
+  .about-card{background:var(--card);border-radius:var(--r-lg);padding:26px 22px;box-shadow:var(--shadow-sm);border:1px solid var(--line)}
+  .about-card > * + *{margin-top:14px}
+  .quotes{display:grid;gap:14px}
+  .quote{
+    background:var(--card);border-radius:var(--r-lg);padding:22px;
+    box-shadow:var(--shadow-sm);border:1px solid var(--line);
+  }
+  .quote p{color:var(--muted)}
+  .quote cite{display:block;margin-top:12px;font-style:normal;font-weight:700;font-size:15px}
+
+  /* ---------- contact ---------- */
+  .contact .wrap{
+    background:var(--card);border-radius:var(--r-xl);padding:30px 22px;
+    box-shadow:var(--shadow-md);border:1px solid var(--line);
+  }
+  .contact-actions{display:grid;gap:10px;margin-top:22px}
+  .contact-hint{margin-top:16px;font-size:14.5px;color:var(--muted)}
+
+  /* ---------- footer ---------- */
+  .footer{background:var(--ink);color:rgba(255,255,255,.82);padding:44px 0 34px;margin-top:20px}
+  .footer h3{font-size:14px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.55);font-weight:800}
+  .footer a{color:#fff;text-decoration-color:rgba(255,255,255,.4);text-underline-offset:3px}
+  .f-grid{display:grid;gap:28px}
+  .f-col > * + *{margin-top:10px}
+  .footer .hours-list .d{color:rgba(255,255,255,.6)}
+  .footer .hours-list li.is-today .d,.footer .hours-list li.is-today .t{color:var(--sun)}
+  .f-bottom{
+    margin-top:32px;padding-top:20px;border-top:1px solid rgba(255,255,255,.14);
+    display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between;
+    font-size:14px;color:rgba(255,255,255,.6);
+  }
+  .socials{display:flex;gap:10px;flex-wrap:wrap}
+  .socials a{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    min-height:44px;padding:0 16px;border-radius:999px;
+    background:rgba(255,255,255,.10);text-decoration:none;font-size:15px;font-weight:700;
+  }
+
+  /* License slot — intentionally empty until the owner confirms the number.
+     Never fill this with a sample value. */
+  .license{
+    border:1px dashed rgba(255,255,255,.32);border-radius:var(--r-sm);
+    padding:12px 14px;font-size:14.5px;
+  }
+  .license .lic-label{color:rgba(255,255,255,.6);font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;font-weight:800}
+  .license .lic-value{font-weight:700;color:#fff;font-variant-numeric:tabular-nums;margin-top:4px}
+  .license .lic-empty{color:rgba(255,255,255,.5);font-style:italic;margin-top:4px}
+
+  /* ---------- fixed mobile call bar ---------- */
+  .callbar{
+    position:fixed;left:0;right:0;bottom:0;z-index:50;
+    padding:10px var(--pad) calc(10px + env(safe-area-inset-bottom,0px));
+    background:rgba(255,249,243,.94);
+    backdrop-filter:saturate(150%) blur(10px);
+    -webkit-backdrop-filter:saturate(150%) blur(10px);
+    border-top:1px solid var(--line);
+    display:flex;gap:10px;
+  }
+  .callbar .btn{flex:1;min-height:52px;padding:13px 16px;font-size:17px}
+  .callbar .btn-wa{flex:0 0 auto}
+
+  /* ---------- draft flags ---------- */
+  /* Visible only while DRAFT.enabled is true in CONTENT. */
+  .flag{
+    display:inline-flex;align-items:center;gap:6px;vertical-align:middle;
+    background:#fff3d6;color:#8a5b00;border:1px solid #f0d089;
+    border-radius:999px;padding:3px 10px;font-size:11.5px;font-weight:800;
+    letter-spacing:.05em;text-transform:uppercase;margin-left:8px;
+  }
+  .footer .flag{background:rgba(255,194,75,.18);color:var(--sun);border-color:rgba(255,194,75,.35)}
+  .draftbar{
+    background:#fff3d6;color:#7a5100;border-bottom:1px solid #f0d089;
+    font-size:14px;padding:10px var(--pad);text-align:center;
+  }
+  .draftbar b{font-weight:800}
+  [hidden]{display:none !important}
+
+  /* ---------- narrow phones ---------- */
+  /* Keeps the business name in the header from truncating next to the
+     language toggle on a small screen. */
+  @media (max-width:430px){
+    .lang button{padding:11px 9px;font-size:13px}
+    header .brand .mark{width:32px;height:32px;border-radius:11px;font-size:15px}
+    header .brand{gap:8px}
+    header .brand .name{font-size:14.5px}
+    .bar{gap:8px;min-height:60px}
+  }
+  @media (max-width:380px){
+    header .brand .name{font-size:13.5px}
+  }
+
+  /* ---------- wider screens ---------- */
+  @media (min-width:640px){
+    :root{--pad:28px}
+    .hero-cta{flex-direction:row;flex-wrap:wrap;align-items:center}
+    .hero-cta .btn{width:auto}
+    .glance{grid-template-columns:repeat(2,1fr)}
+    .gallery{grid-template-columns:repeat(2,1fr)}
+    .programs{grid-template-columns:repeat(2,1fr)}
+    .contact-actions{grid-template-columns:repeat(2,1fr)}
+    .quotes{grid-template-columns:repeat(2,1fr)}
+    .meals .wrap,.contact .wrap{padding:38px 34px}
+    .about-card{padding:32px 30px}
+  }
+  @media (min-width:900px){
+    body{padding-bottom:0} /* call bar is hidden on desktop */
+    .callbar{display:none}
+    .btn-head{display:inline-flex;padding:11px 20px;min-height:46px;font-size:16px}
+    .section{padding:78px 0}
+    .hero{padding:56px 0 76px}
+    .hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:46px;align-items:center}
+    .hero-photo{margin-top:0}
+    .hero-photo .ph{aspect-ratio:3/4;max-height:520px}
+    .glance{grid-template-columns:repeat(4,1fr)}
+    .g-card{flex-direction:column;gap:14px}
+    .gallery{grid-template-columns:repeat(2,1fr)}
+    .gallery .g-item:first-child{grid-column:1 / -1}
+    .gallery .g-item:first-child .ph{aspect-ratio:16/9}
+    .programs{grid-template-columns:repeat(3,1fr)}
+    .quotes{grid-template-columns:repeat(3,1fr)}
+    .f-grid{grid-template-columns:1.3fr 1fr 1fr}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{transition:none !important;animation:none !important}
+    .hero-photo{transform:none}
+  }
+</style>
+</head>
+<body>
+
+<!-- =====================================================================
+     EDIT EVERYTHING HERE. Nothing below this script needs to be touched
+     for a text or photo change.
+     ===================================================================== -->
+<script>
+/* eslint-disable */
+
+/* Sample-build switch.
+   While true, every invented placeholder is badged on the page so nothing
+   fake can quietly go live. Set to false once the questionnaire comes back
+   and the [PLACEHOLDER] copy has been replaced. */
+const DRAFT = {
+  enabled: true,
+};
+
+const CONTENT = {
+
+  /* -------------------------------------------------------------------
+     CONFIRMED FACTS — from the public Google Business Profile.
+     Language-independent values live here; their labels live in es/en.
+     ------------------------------------------------------------------- */
+  business: {
+    name: "Maya Family Daycare",
+    initials: "M",                       // shown in the little logo tile until a real logo image exists
+    phone: "(661) 313-8262",             // display form
+    phoneDial: "+16613138262",           // tel: form
+    whatsapp: "16613138262",             // [UNCONFIRMED] assumed to be the same line — confirm she uses WhatsApp before publishing
+    email: "",                           // [PLACEHOLDER] no address confirmed yet; the email button stays hidden while this is empty
+    street: "5051 Bell Ave",             // shown only when showStreetAddress is true (see settings)
+    city: "Palmdale",
+    state: "CA",
+    zip: "93552",
+    /* Google Maps listing. Built from the address so there is one source of
+       truth. If she sends the short link from her Business Profile, paste it
+       into mapsUrlOverride and it wins. */
+    mapsUrlOverride: "",
+    /* Hours, 24h numbers. Day labels and AM/PM wording live in es/en. */
+    hours: [
+      { key: "monThu", open: [7, 0],  close: [17, 30], days: [1, 2, 3, 4] },
+      { key: "fri",    open: [7, 30], close: [17, 30], days: [5] },
+      { key: "satSun", closed: true,                   days: [6, 0] },
+    ],
+    /* Social profiles. Leave a url empty and the link simply doesn't render.
+       [PLACEHOLDER] none confirmed yet. */
+    socials: [
+      { key: "facebook",  label: "Facebook",  url: "" },
+      { key: "instagram", label: "Instagram", url: "" },
+    ],
+    /* LICENSE — California requires a licensed home to display its number and
+       parents look for it. The owner has NOT confirmed hers.
+       LEAVE THIS EMPTY. Do not put a sample or example number here. */
+    license: {
+      number: "",   // e.g. filled in later, once confirmed with the owner
+      type: "",     // e.g. the license type as printed on her license
+    },
+  },
+
+  /* Display switches for the sensitive items listed in CLAUDE.md. */
+  settings: {
+    /* false → the page shows "Palmdale, CA" only; the Directions button still
+       routes correctly. Flip to true once the owner okays publishing the exact
+       street address. */
+    showStreetAddress: false,
+  },
+
+  /* -------------------------------------------------------------------
+     PHOTOS — drop the files in assets/ using exactly these filenames.
+     To swap a photo later, overwrite the file and keep the filename.
+     Compress first: aim under ~300KB each.
+     ------------------------------------------------------------------- */
+  images: {
+    fachada:    "assets/fachada.jpg",           // front of the house from the street
+    salonBebes: "assets/salon-bebes.jpg",       // infant room, cribs
+    salonMain:  "assets/salon-principal.jpg",   // main room, jungle/tree wall motif
+    patio:      "assets/patio.jpg",             // covered patio, shade sails, play equipment
+  },
+
+  /* -------------------------------------------------------------------
+     SPANISH
+     ------------------------------------------------------------------- */
+  es: {
+    htmlLang: "es",
+    langLabel: "Español",
+    langSwitchAria: "Cambiar idioma / Change language",
+    skipToContent: "Ir al contenido",
+
+    docTitle: "Maya Family Daycare — Cuidado infantil en casa en Palmdale, CA",
+    docDescription: "Cuidado infantil en un hogar de Palmdale, CA: desde bebés hasta niños de escuela, con ayuda con la tarea, comidas y patio con sombra. Llame al (661) 313-8262.",
+
+    draftBanner: "Versión de muestra. El texto marcado en amarillo es de ejemplo y falta reemplazarlo.",
+    flag: "Ejemplo",
+
+    /* Hero */
+    heroKicker: "Palmdale · Antelope Valley",
+    heroTitleLead: "Un lugar tranquilo para su hijo,",
+    heroTitleAccent: "a unos minutos de casa.",
+    heroSub: "Cuidado en un hogar de familia en Palmdale, desde bebés hasta niños de escuela. Días con rutina, comidas caseras, ayuda con la tarea y un patio con sombra para jugar afuera.",
+    heroPhotoAlt: "Frente de la casa de Maya Family Daycare en Palmdale",
+    heroPhotoMissing: "FOTO PENDIENTE — frente de la casa (assets/fachada.jpg)",
+    openNow: "Abierto ahora",
+    closedNow: "Cerrado ahora",
+    opensAt: "Abre a las",
+    todayHours: "Hoy",
+
+    /* Botones */
+    ctaCall: "Llamar ahora",
+    ctaCallAria: "Llamar a Maya Family Daycare",
+    ctaWhatsapp: "WhatsApp",
+    ctaEmail: "Enviar correo",
+    ctaDirections: "Cómo llegar",
+    ctaCallShort: "Llamar",
+    whatsappPrefill: "Hola, encontré su página de Maya Family Daycare. Me gustaría saber si tienen cupo y cuánto cuesta el cuidado. Gracias.",
+    emailSubject: "Pregunta sobre cupo en Maya Family Daycare",
+    emailBody: "Hola, encontré su página de Maya Family Daycare. Me gustaría saber si tienen cupo. Gracias.",
+
+    /* De un vistazo */
+    glanceTitle: "De un vistazo",
+    glanceHoursLabel: "Horario",
+    glanceAgesLabel: "Edades",
+    glanceAgesValue: "Bebés hasta edad escolar",
+    glanceAgesNote: "Cunas para los más pequeños y ayuda con la tarea para los grandes.",
+    glanceWhereLabel: "Dónde",
+    glanceWhereNote: "Hogar de familia, no un centro grande.",
+    glanceHelpLabel: "Ayuda con el pago",
+    glanceHelpValue: "[MARCADOR] Por confirmar",
+    glanceHelpNote: "[MARCADOR] Confirmar si acepta pagos de CCRC (Child Care Resource Center, oficina de Lancaster) — programa de pago alternativo, CalWORKs, vales. Si no, poner \"Pago particular\".",
+    dayLabels: {
+      monThu: "Lunes a jueves",
+      fri: "Viernes",
+      satSun: "Sábado y domingo",
+    },
+    closedLabel: "Cerrado",
+    am: "a.m.",
+    pm: "p.m.",
+
+    /* El espacio */
+    spaceKicker: "El espacio",
+    spaceTitle: "Adentro con calma, afuera con sombra",
+    spaceLead: "La casa está preparada para niños: cuartos separados para los bebés y para los grandes, y un patio cubierto donde se puede jugar afuera aunque el sol de Palmdale esté pegando fuerte.",
+    photos: [
+      {
+        image: "patio",
+        alt: "Patio cubierto con velas de sombra y juegos al aire libre",
+        missing: "FOTO PENDIENTE — patio con sombra (assets/patio.jpg)",
+        title: "Patio con sombra",
+        caption: "Velas de sombra sobre el patio cubierto, casita de juegos, carritos y mesa de agua. En el verano del Antelope Valley, la sombra es lo que hace posible salir a jugar.",
+      },
+      {
+        image: "salonBebes",
+        alt: "Cuarto de bebés con cunas",
+        missing: "FOTO PENDIENTE — cuarto de bebés (assets/salon-bebes.jpg)",
+        title: "Cuarto de bebés",
+        caption: "Cunas en un cuarto aparte, tranquilo, para que los bebés duerman su siesta sin el ruido de los grandes.",
+      },
+      {
+        image: "salonMain",
+        alt: "Salón principal con mural de árboles y selva en la pared",
+        missing: "FOTO PENDIENTE — salón principal (assets/salon-principal.jpg)",
+        title: "Salón principal",
+        caption: "El mural de árboles en la pared es donde pasa casi todo: juego, actividades, cuentos y la mesa de la tarea.",
+      },
+      {
+        image: "fachada",
+        alt: "Frente de la casa",
+        missing: "FOTO PENDIENTE — frente de la casa (assets/fachada.jpg)",
+        title: "La casa",
+        caption: "Una casa de familia en un vecindario tranquilo de Palmdale, con lugar para estacionarse al dejar y recoger.",
+      },
+    ],
+    spaceChips: ["Velas de sombra", "Patio cubierto", "Casita de juegos", "Mesa de agua", "Carritos para montar", "Cunas"],
+
+    /* Programas */
+    programsKicker: "Para cada edad",
+    programsTitle: "Dos familias muy distintas, y las dos caben aquí",
+    programsLead: "El día de un bebé y el de un niño de tercer grado no se parecen en nada. Aquí están separados a propósito.",
+    programs: [
+      {
+        age: "Bebés y niños pequeños",
+        title: "Rutina, brazos y siestas",
+        body: "Cunas en el cuarto de bebés, siestas cuando el niño las pide y un reporte del día cuando lo recoge: cómo comió, cuánto durmió, cómo anduvo de ánimo.",
+        points: ["Cunas en cuarto aparte", "Siesta según el ritmo del bebé", "Reporte diario al recoger"],
+      },
+      {
+        age: "Preescolares",
+        title: "Jugar y prepararse para el kínder",
+        body: "Actividades educativas, colores, letras y números — sin apuro y sin escritorios. Mucho tiempo afuera cuando el clima ayuda.",
+        points: ["Actividades educativas diarias", "Juego libre adentro y afuera", "Hábitos para entrar al kínder"],
+        note: "[MARCADOR] Si atiende a niños de edad TK (4 años), aquí es donde conviene decirlo — muchas familias de Palmdale están decidiendo entre TK y quedarse en el daycare.",
+      },
+      {
+        age: "Edad escolar",
+        title: "Tarea y después de la escuela",
+        body: "Un lugar donde sentarse a hacer la tarea con ayuda, merendar y desahogarse jugando antes de irse a casa.",
+        points: ["Ayuda con la tarea", "Merienda en la tarde", "Tiempo de juego afuera"],
+        note: "[MARCADOR] Confirmar si recoge en alguna escuela y qué escuelas quedan cerca.",
+      },
+    ],
+
+    /* Comidas */
+    mealsKicker: "Comidas",
+    mealsTitle: "Comida hecha en casa, no de bolsa",
+    mealsBody: "Las comidas se preparan aquí mismo, en la cocina de la casa.",
+    mealsPlaceholder: "[MARCADOR] Falta confirmar: qué comidas se incluyen (desayuno, almuerzo, merienda), si están incluidas en el precio, si participa en el programa de alimentos CACFP, y cómo se manejan las alergias o las dietas especiales.",
+
+    /* Sobre Maya */
+    aboutKicker: "Quién los cuida",
+    aboutTitle: "Sobre Maya",
+    aboutBody: "[MARCADOR] Aquí va la presentación de la dueña en sus propias palabras: cuántos años lleva cuidando niños, por qué empezó, qué le importa en el trato con los niños y con los papás. Dos o tres párrafos cortos. Esta es la parte que más leen los papás antes de llamar — no la dejemos genérica.",
+    aboutMissing: "[MARCADOR] Falta: nombre completo, años de experiencia, capacitaciones (CPR, primeros auxilios, desarrollo infantil), idiomas que habla y si hay más personas ayudando.",
+
+    /* Testimonios */
+    quotesKicker: "Familias",
+    quotesTitle: "Lo que dicen los papás",
+    quotesEmpty: "[MARCADOR] Todavía no hay reseñas publicadas. En cuanto dos o tres familias dejen su reseña en Google, se ponen aquí — con su permiso y solo con el nombre de pila. No inventar comentarios.",
+    quotes: [], // se llena con reseñas reales, nunca inventadas
+
+    /* Contacto */
+    contactKicker: "Hablemos",
+    contactTitle: "¿Tiene cupo para mi hijo?",
+    contactLead: "La forma más rápida de saberlo es llamar. Si prefiere escribir, el WhatsApp llega igual de rápido.",
+    contactHint: "Si no contesta, es porque está con los niños. Deje mensaje y le regresa la llamada.",
+
+    /* Pie */
+    footerHoursTitle: "Horario",
+    footerContactTitle: "Contacto",
+    footerFindTitle: "Dónde estamos",
+    licenseLabel: "Número de licencia del estado",
+    licenseEmpty: "[PENDIENTE — no publicar hasta confirmarlo con la dueña]",
+    licenseNote: "Licencia del Departamento de Servicios Sociales de California (Community Care Licensing).",
+    footerRights: "Todos los derechos reservados.",
+    footerLangTitle: "Idioma",
+  },
+
+  /* -------------------------------------------------------------------
+     ENGLISH — every key here must also exist in es, and vice versa.
+     ------------------------------------------------------------------- */
+  en: {
+    htmlLang: "en",
+    langLabel: "English",
+    langSwitchAria: "Change language / Cambiar idioma",
+    skipToContent: "Skip to content",
+
+    docTitle: "Maya Family Daycare — Home child care in Palmdale, CA",
+    docDescription: "Home-based child care in Palmdale, CA for infants through school-age kids: homework help, home-cooked meals, and a shaded outdoor play area. Call (661) 313-8262.",
+
+    draftBanner: "Sample build. Anything flagged in yellow is example text and still needs to be replaced.",
+    flag: "Sample",
+
+    /* Hero */
+    heroKicker: "Palmdale · Antelope Valley",
+    heroTitleLead: "A calm place for your child,",
+    heroTitleAccent: "a few minutes from home.",
+    heroSub: "Home-based child care in Palmdale for infants through school-age kids. Steady daily routines, home-cooked meals, homework help, and a shaded yard for playing outside.",
+    heroPhotoAlt: "Front of the Maya Family Daycare house in Palmdale",
+    heroPhotoMissing: "PHOTO PENDING — front of the house (assets/fachada.jpg)",
+    openNow: "Open now",
+    closedNow: "Closed now",
+    opensAt: "Opens at",
+    todayHours: "Today",
+
+    /* Buttons */
+    ctaCall: "Call now",
+    ctaCallAria: "Call Maya Family Daycare",
+    ctaWhatsapp: "WhatsApp",
+    ctaEmail: "Send an email",
+    ctaDirections: "Get directions",
+    ctaCallShort: "Call",
+    whatsappPrefill: "Hi! I found the Maya Family Daycare page. I'd like to know if you have an opening and what the rates are. Thank you.",
+    emailSubject: "Question about openings at Maya Family Daycare",
+    emailBody: "Hi! I found the Maya Family Daycare page. I'd like to know if you have an opening. Thank you.",
+
+    /* At a glance */
+    glanceTitle: "At a glance",
+    glanceHoursLabel: "Hours",
+    glanceAgesLabel: "Ages",
+    glanceAgesValue: "Infants through school-age",
+    glanceAgesNote: "Cribs for the little ones, homework help for the big ones.",
+    glanceWhereLabel: "Where",
+    glanceWhereNote: "A family home, not a big center.",
+    glanceHelpLabel: "Help paying",
+    glanceHelpValue: "[PLACEHOLDER] To be confirmed",
+    glanceHelpNote: "[PLACEHOLDER] Confirm whether she accepts CCRC (Child Care Resource Center, Lancaster office) payments — Alternative Payment Program, CalWORKs stages, vouchers. If not, say \"Private pay\".",
+    dayLabels: {
+      monThu: "Monday – Thursday",
+      fri: "Friday",
+      satSun: "Saturday & Sunday",
+    },
+    closedLabel: "Closed",
+    am: "AM",
+    pm: "PM",
+
+    /* The space */
+    spaceKicker: "The space",
+    spaceTitle: "Calm inside, shaded outside",
+    spaceLead: "The house is set up for kids: separate rooms for babies and for the older ones, and a covered patio that makes outdoor play possible even when the Palmdale sun is brutal.",
+    photos: [
+      {
+        image: "patio",
+        alt: "Covered patio with shade sails and outdoor play equipment",
+        missing: "PHOTO PENDING — shaded patio (assets/patio.jpg)",
+        title: "The shaded yard",
+        caption: "Shade sails over a covered patio, a playhouse, ride-on toys, and a water table. In an Antelope Valley summer, shade is what makes outdoor play possible at all.",
+      },
+      {
+        image: "salonBebes",
+        alt: "Infant room with cribs",
+        missing: "PHOTO PENDING — infant room (assets/salon-bebes.jpg)",
+        title: "The infant room",
+        caption: "Cribs in their own quiet room, so babies can nap without the noise of the older kids.",
+      },
+      {
+        image: "salonMain",
+        alt: "Main room with a painted tree and jungle wall mural",
+        missing: "PHOTO PENDING — main room (assets/salon-principal.jpg)",
+        title: "The main room",
+        caption: "The painted tree wall is where most of the day happens: play, activities, story time, and the homework table.",
+      },
+      {
+        image: "fachada",
+        alt: "Front of the house",
+        missing: "PHOTO PENDING — front of the house (assets/fachada.jpg)",
+        title: "The house",
+        caption: "A family home on a quiet Palmdale street, with room to park at drop-off and pick-up.",
+      },
+    ],
+    spaceChips: ["Shade sails", "Covered patio", "Playhouse", "Water table", "Ride-on toys", "Cribs"],
+
+    /* Programs */
+    programsKicker: "Every age",
+    programsTitle: "Two very different families, and both fit here",
+    programsLead: "A baby's day and a third-grader's day have nothing in common. They're kept separate on purpose.",
+    programs: [
+      {
+        age: "Infants & toddlers",
+        title: "Routine, arms, and naps",
+        body: "Cribs in the infant room, naps when your child actually needs them, and a rundown at pick-up: how they ate, how long they slept, how the day went.",
+        points: ["Cribs in a separate room", "Naps on your baby's schedule", "Daily update at pick-up"],
+      },
+      {
+        age: "Preschoolers",
+        title: "Play, and getting ready for kindergarten",
+        body: "Educational activities, colors, letters, and numbers — unhurried, and not at a desk. Plenty of time outside when the weather cooperates.",
+        points: ["Daily educational activities", "Free play inside and out", "Kindergarten-ready habits"],
+        note: "[PLACEHOLDER] If she takes TK-age (4-year-old) children, this is where to say so — a lot of Palmdale families are deciding between TK and staying in daycare.",
+      },
+      {
+        age: "School-age",
+        title: "Homework and after school",
+        body: "A place to sit down and get homework done with help, have a snack, and burn off the rest of the day outside before heading home.",
+        points: ["Homework help", "Afternoon snack", "Outdoor play time"],
+        note: "[PLACEHOLDER] Confirm whether she picks up from any school, and which schools are nearby.",
+      },
+    ],
+
+    /* Meals */
+    mealsKicker: "Meals",
+    mealsTitle: "Food cooked here, not out of a bag",
+    mealsBody: "Meals are prepared on site, in the home's own kitchen.",
+    mealsPlaceholder: "[PLACEHOLDER] Still to confirm: which meals are included (breakfast, lunch, snack), whether they're included in the rate, whether she participates in the CACFP food program, and how allergies or special diets are handled.",
+
+    /* About */
+    aboutKicker: "Who's caring for them",
+    aboutTitle: "About Maya",
+    aboutBody: "[PLACEHOLDER] This is where the owner introduces herself in her own words: how long she's been caring for children, why she started, what matters to her in how she treats the kids and the parents. Two or three short paragraphs. This is the section parents read hardest before they call — it shouldn't stay generic.",
+    aboutMissing: "[PLACEHOLDER] Missing: full name, years of experience, training (CPR, first aid, child development), languages spoken, and whether anyone else helps with care.",
+
+    /* Testimonials */
+    quotesKicker: "Families",
+    quotesTitle: "What parents say",
+    quotesEmpty: "[PLACEHOLDER] No reviews published yet. As soon as two or three families leave a Google review, they go here — with permission, first name only. Do not invent quotes.",
+    quotes: [], // filled with real reviews only, never invented
+
+    /* Contact */
+    contactKicker: "Get in touch",
+    contactTitle: "Do you have an opening for my child?",
+    contactLead: "The fastest way to find out is to call. If you'd rather write, WhatsApp gets there just as quickly.",
+    contactHint: "If she doesn't pick up, she's with the kids. Leave a message and she'll call you back.",
+
+    /* Footer */
+    footerHoursTitle: "Hours",
+    footerContactTitle: "Contact",
+    footerFindTitle: "Find us",
+    licenseLabel: "State license number",
+    licenseEmpty: "[PENDING — do not publish until confirmed with the owner]",
+    licenseNote: "Licensed by the California Department of Social Services, Community Care Licensing.",
+    footerRights: "All rights reserved.",
+    footerLangTitle: "Language",
+  },
+};
+</script>
+<!-- ===================== END OF EDITABLE CONTENT ====================== -->
+
+<a class="btn btn-ghost" id="skipLink" href="#main" style="position:absolute;left:-9999px;top:8px;z-index:99"></a>
+
+<div class="draftbar" id="draftBanner" hidden></div>
+
+<header id="siteHeader">
+  <div class="wrap bar">
+    <a class="brand" href="#top">
+      <span class="mark" aria-hidden="true" data-t="business.initials"></span>
+      <span class="name" data-t="business.name"></span>
+    </a>
+    <div class="lang" role="group" data-t-aria="langSwitchAria">
+      <button type="button" data-lang="en" data-t="en.langLabel"></button>
+      <button type="button" data-lang="es" data-t="es.langLabel"></button>
+    </div>
+    <a class="btn btn-call btn-head" data-cta="call" data-t="ctaCallShort" data-t-aria="ctaCallAria" href="#"></a>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- HERO -->
+  <section class="hero" id="top">
+    <div class="wrap">
+      <div>
+        <span class="kicker" data-t="heroKicker"></span>
+        <h1><span data-t="heroTitleLead"></span> <em data-t="heroTitleAccent"></em></h1>
+        <p class="lead" data-t="heroSub"></p>
+        <div class="hero-cta">
+          <a class="btn btn-call" data-cta="call" data-t="ctaCall" data-t-aria="ctaCallAria" href="#"></a>
+          <a class="btn btn-wa" data-cta="whatsapp" href="#" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2Zm0 18.02a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.16 8.16 0 0 1-1.26-4.35c0-4.54 3.7-8.23 8.24-8.23a8.23 8.23 0 0 1 0 16.44Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.79.97-.14.16-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.01-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43h-.48c-.16 0-.43.06-.65.31-.22.25-.85.83-.85 2.03s.87 2.35.99 2.51c.12.16 1.71 2.61 4.15 3.66.58.25 1.03.4 1.39.51.58.19 1.11.16 1.53.1.47-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.11-.22-.17-.47-.29Z"/></svg>
+            <span data-t="ctaWhatsapp"></span>
+          </a>
+        </div>
+        <p class="hero-note"><span class="dot" id="statusDot" aria-hidden="true"></span><span id="statusText"></span></p>
+      </div>
+      <figure class="hero-photo">
+        <div class="ph" data-img="fachada" data-t-alt="heroPhotoAlt" data-t-missing="heroPhotoMissing"><img alt=""></div>
+      </figure>
+    </div>
+  </section>
+
+  <!-- AT A GLANCE -->
+  <section class="section" id="glance">
+    <div class="wrap">
+      <h2 data-t="glanceTitle"></h2>
+      <div class="glance">
+
+        <div class="g-card">
+          <span class="g-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+          <div>
+            <div class="g-label" data-t="glanceHoursLabel"></div>
+            <ul class="hours-list" data-hours></ul>
+          </div>
+        </div>
+
+        <div class="g-card">
+          <span class="g-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-4.35-7-9a7 7 0 1 1 14 0c0 4.65-7 9-7 9Z"/><circle cx="12" cy="11" r="2.4"/></svg></span>
+          <div>
+            <div class="g-label" data-t="glanceAgesLabel"></div>
+            <div class="g-value" data-t="glanceAgesValue"></div>
+            <div class="g-note" data-t="glanceAgesNote"></div>
+          </div>
+        </div>
+
+        <div class="g-card">
+          <span class="g-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11 12 4l8 7"/><path d="M6 10v9h12v-9"/><path d="M10 19v-5h4v5"/></svg></span>
+          <div>
+            <div class="g-label" data-t="glanceWhereLabel"></div>
+            <div class="g-value" data-address></div>
+            <div class="g-note" data-t="glanceWhereNote"></div>
+          </div>
+        </div>
+
+        <div class="g-card">
+          <span class="g-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18v11H3z"/><path d="M3 11h18"/><path d="M7 15h3"/></svg></span>
+          <div>
+            <div class="g-label" data-t="glanceHelpLabel"></div>
+            <div class="g-value" data-t="glanceHelpValue" data-flag></div>
+            <div class="g-note" data-t="glanceHelpNote"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- THE SPACE -->
+  <section class="section space" id="space">
+    <div class="wrap">
+      <span class="kicker" data-t="spaceKicker"></span>
+      <h2 data-t="spaceTitle"></h2>
+      <p class="lead" data-t="spaceLead"></p>
+      <div class="gallery" data-gallery></div>
+      <ul class="feature-chips" data-chips></ul>
+    </div>
+  </section>
+
+  <!-- PROGRAMS -->
+  <section class="section" id="programs">
+    <div class="wrap">
+      <span class="kicker" data-t="programsKicker"></span>
+      <h2 data-t="programsTitle"></h2>
+      <p class="lead" data-t="programsLead"></p>
+      <div class="programs" data-programs></div>
+    </div>
+  </section>
+
+  <!-- MEALS -->
+  <section class="section meals" id="meals">
+    <div class="wrap">
+      <span class="kicker" data-t="mealsKicker"></span>
+      <h2 data-t="mealsTitle"></h2>
+      <p class="lead" data-t="mealsBody"></p>
+      <p class="lead" data-t="mealsPlaceholder" data-flag></p>
+    </div>
+  </section>
+
+  <!-- ABOUT THE OWNER -->
+  <section class="section" id="about">
+    <div class="wrap">
+      <span class="kicker" data-t="aboutKicker"></span>
+      <h2 data-t="aboutTitle" data-flag></h2>
+      <div class="about-card">
+        <p class="lead" data-t="aboutBody"></p>
+        <p class="lead" data-t="aboutMissing"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="section" id="quotes">
+    <div class="wrap">
+      <span class="kicker" data-t="quotesKicker"></span>
+      <h2 data-t="quotesTitle" data-flag></h2>
+      <div class="quotes" data-quotes></div>
+      <p class="lead" data-t="quotesEmpty" data-quotes-empty></p>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="section contact" id="contact">
+    <div class="wrap">
+      <span class="kicker" data-t="contactKicker"></span>
+      <h2 data-t="contactTitle"></h2>
+      <p class="lead" data-t="contactLead"></p>
+      <div class="contact-actions">
+        <a class="btn btn-call btn-block" data-cta="call" data-t="ctaCall" data-t-aria="ctaCallAria" href="#"></a>
+        <a class="btn btn-wa btn-block" data-cta="whatsapp" data-t="ctaWhatsapp" href="#" target="_blank" rel="noopener"></a>
+        <a class="btn btn-ghost btn-block" data-cta="directions" data-t="ctaDirections" href="#" target="_blank" rel="noopener"></a>
+        <a class="btn btn-ghost btn-block" data-cta="email" data-t="ctaEmail" href="#"></a>
+      </div>
+      <p class="contact-hint" data-t="contactHint"></p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="wrap">
+    <div class="f-grid">
+
+      <div class="f-col">
+        <div class="brand">
+          <span class="mark" aria-hidden="true" data-t="business.initials"></span>
+          <span class="name" data-t="business.name"></span>
+        </div>
+        <!-- Reserved license slot. Stays empty until the owner confirms the
+             number and type. Do not fill with a sample. -->
+        <div class="license">
+          <div class="lic-label" data-t="licenseLabel"></div>
+          <div class="lic-value" data-license-value hidden></div>
+          <div class="lic-empty" data-license-empty data-t="licenseEmpty"></div>
+        </div>
+        <p style="font-size:14px;color:rgba(255,255,255,.55)" data-t="licenseNote"></p>
+      </div>
+
+      <div class="f-col">
+        <h3 data-t="footerHoursTitle"></h3>
+        <ul class="hours-list" data-hours></ul>
+      </div>
+
+      <div class="f-col">
+        <h3 data-t="footerContactTitle"></h3>
+        <p><a data-cta="call" data-t="business.phone" href="#"></a></p>
+        <p><a data-cta="email" data-t="ctaEmail" href="#"></a></p>
+        <h3 style="margin-top:18px" data-t="footerFindTitle"></h3>
+        <p data-address></p>
+        <p><a data-cta="directions" data-t="ctaDirections" href="#" target="_blank" rel="noopener"></a></p>
+        <div class="socials" data-socials></div>
+      </div>
+
+    </div>
+
+    <div class="f-bottom">
+      <span data-copyright></span>
+      <div class="lang" role="group" data-t-aria="langSwitchAria">
+        <button type="button" data-lang="en" data-t="en.langLabel"></button>
+        <button type="button" data-lang="es" data-t="es.langLabel"></button>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Fixed call bar, phones only. -->
+<div class="callbar">
+  <a class="btn btn-call" data-cta="call" data-t="ctaCall" data-t-aria="ctaCallAria" href="#"></a>
+  <a class="btn btn-wa" data-cta="whatsapp" href="#" target="_blank" rel="noopener" data-t-aria="ctaWhatsapp">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2Zm0 18.02a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.16 8.16 0 0 1-1.26-4.35c0-4.54 3.7-8.23 8.24-8.23a8.23 8.23 0 0 1 0 16.44Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.79.97-.14.16-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.01-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43h-.48c-.16 0-.43.06-.65.31-.22.25-.85.83-.85 2.03s.87 2.35.99 2.51c.12.16 1.71 2.61 4.15 3.66.58.25 1.03.4 1.39.51.58.19 1.11.16 1.53.1.47-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.11-.22-.17-.47-.29Z"/></svg>
+  </a>
+</div>
+
+<!-- Minimal no-JavaScript fallback. This is the ONE place a value is repeated
+     outside CONTENT; a parent with JS off still gets a working phone number.
+     If the phone number ever changes, change it here too. -->
+<noscript>
+  <div class="wrap" style="padding:24px 20px">
+    <p><strong>Maya Family Daycare</strong> — Palmdale, CA</p>
+    <p><a href="tel:+16613138262">(661) 313-8262</a></p>
+  </div>
+</noscript>
+
+<script>
+/* ---------------------------------------------------------------------
+   Rendering. Nothing below holds copy or image paths — it only reads
+   CONTENT and puts values where the data- attributes say they go.
+
+   Attributes used in the markup above:
+     data-t="key"          → element text, from the active language
+     data-t="es.langLabel" → a fixed language's string (for the toggle)
+     data-t="business.x"   → a language-independent business value
+     data-t-aria="key"     → aria-label
+     data-t-alt="key"      → alt text on the <img> inside a .ph
+     data-t-missing="key"  → label shown if the photo file isn't there yet
+     data-img="key"        → photo, from CONTENT.images
+     data-cta="call|whatsapp|email|directions" → builds the right href
+     data-flag             → gets a "sample" badge while DRAFT.enabled
+   --------------------------------------------------------------------- */
+(function () {
+  "use strict";
+
+  var B = CONTENT.business;
+  var lang = "en";
+
+  /* ---------- small helpers ---------- */
+
+  function L() { return CONTENT[lang]; }
+
+  // "business.phone" / "es.langLabel" / "heroSub"
+  function lookup(path) {
+    var parts = path.split(".");
+    var node = parts.length > 1 ? CONTENT : L();
+    for (var i = 0; i < parts.length; i++) {
+      if (node == null) return "";
+      node = node[parts[i]];
+    }
+    return node == null ? "" : node;
+  }
+
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  }
+
+  function fmtTime(hm) {
+    var h = hm[0], m = hm[1];
+    var suffix = h >= 12 ? L().pm : L().am;
+    var h12 = h % 12 === 0 ? 12 : h % 12;
+    return h12 + ":" + (m < 10 ? "0" + m : m) + " " + suffix;
+  }
+
+  function addressLine() {
+    var tail = B.city + ", " + B.state;
+    return CONTENT.settings.showStreetAddress ? B.street + ", " + tail + " " + B.zip : tail;
+  }
+
+  function mapsUrl() {
+    if (B.mapsUrlOverride) return B.mapsUrlOverride;
+    var q = [B.name, B.street, B.city, B.state, B.zip].join(", ");
+    return "https://www.google.com/maps/dir/?api=1&destination=" + encodeURIComponent(q);
+  }
+
+  function ctaHref(kind) {
+    if (kind === "call") return "tel:" + B.phoneDial;
+    if (kind === "whatsapp") return "https://wa.me/" + B.whatsapp + "?text=" + encodeURIComponent(L().whatsappPrefill);
+    if (kind === "directions") return mapsUrl();
+    if (kind === "email") {
+      return "mailto:" + B.email +
+        "?subject=" + encodeURIComponent(L().emailSubject) +
+        "&body=" + encodeURIComponent(L().emailBody);
+    }
+    return "#";
+  }
+
+  /* Photos. A missing file (nothing in assets/ yet) falls back to a labelled
+     panel rather than a broken image. */
+  function fillPhoto(box, imageKey, altText, missingText) {
+    var img = box.querySelector("img");
+    box.classList.remove("is-missing");
+    var old = box.querySelector(".ph-label");
+    if (old) old.remove();
+    img.alt = altText || "";
+    img.loading = "lazy";
+    img.decoding = "async";
+    img.onerror = function () {
+      box.classList.add("is-missing");
+      if (!box.querySelector(".ph-label")) box.appendChild(el("div", "ph-label", missingText || ""));
+    };
+    img.src = CONTENT.images[imageKey];
+  }
+
+  function newPhoto(spec) {
+    var box = el("div", "ph");
+    box.appendChild(document.createElement("img"));
+    fillPhoto(box, spec.image, spec.alt, spec.missing);
+    return box;
+  }
+
+  /* Draft badge, so invented copy is impossible to miss on the page. */
+  function flag(node) {
+    if (!DRAFT.enabled) return;
+    node.appendChild(el("span", "flag", L().flag));
+  }
+
+  /* ---------- open / closed right now ---------- */
+
+  function todayRow() {
+    var d = new Date().getDay();
+    for (var i = 0; i < B.hours.length; i++) {
+      if (B.hours[i].days.indexOf(d) !== -1) return B.hours[i];
+    }
+    return null;
+  }
+
+  function renderStatus() {
+    var row = todayRow();
+    var now = new Date();
+    var mins = now.getHours() * 60 + now.getMinutes();
+    var open = false, text;
+
+    if (row && !row.closed) {
+      var from = row.open[0] * 60 + row.open[1];
+      var to = row.close[0] * 60 + row.close[1];
+      open = mins >= from && mins < to;
+      text = open
+        ? L().openNow + " · " + L().todayHours + " " + fmtTime(row.open) + " – " + fmtTime(row.close)
+        : L().closedNow + " · " + L().opensAt + " " + fmtTime(row.open);
+    } else {
+      text = L().closedNow;
+    }
+
+    document.getElementById("statusText").textContent = text;
+    document.getElementById("statusDot").classList.toggle("is-closed", !open);
+  }
+
+  /* ---------- list sections ---------- */
+
+  function renderHours() {
+    var today = todayRow();
+    each("[data-hours]", function (list) {
+      list.textContent = "";
+      B.hours.forEach(function (row) {
+        var li = el("li");
+        if (row === today) li.className = "is-today";
+        li.appendChild(el("span", "d", L().dayLabels[row.key]));
+        li.appendChild(el("span", "t", row.closed ? L().closedLabel : fmtTime(row.open) + " – " + fmtTime(row.close)));
+        list.appendChild(li);
+      });
+    });
+  }
+
+  function renderGallery() {
+    var host = document.querySelector("[data-gallery]");
+    host.textContent = "";
+    L().photos.forEach(function (spec) {
+      var fig = el("figure", "g-item");
+      fig.appendChild(newPhoto(spec));
+      var cap = el("figcaption");
+      cap.appendChild(el("b", null, spec.title));
+      cap.appendChild(document.createTextNode(spec.caption));
+      fig.appendChild(cap);
+      host.appendChild(fig);
+    });
+
+    var chips = document.querySelector("[data-chips]");
+    chips.textContent = "";
+    L().spaceChips.forEach(function (c) { chips.appendChild(el("li", null, c)); });
+  }
+
+  function renderPrograms() {
+    var host = document.querySelector("[data-programs]");
+    host.textContent = "";
+    L().programs.forEach(function (p) {
+      var card = el("div", "p-card");
+      card.appendChild(el("div", "p-age", p.age));
+      card.appendChild(el("h3", null, p.title));
+      card.appendChild(el("p", "lead", p.body));
+      var ul = el("ul", "p-list");
+      p.points.forEach(function (pt) { ul.appendChild(el("li", null, pt)); });
+      card.appendChild(ul);
+      if (p.note) {
+        var note = el("p", "lead", p.note);
+        note.style.fontSize = "14.5px";
+        note.style.marginTop = "14px";
+        flag(note);
+        card.appendChild(note);
+      }
+      host.appendChild(card);
+    });
+  }
+
+  /* Real reviews only. While the list is empty the section shows the
+     placeholder note instead — it never renders an invented quote. */
+  function renderQuotes() {
+    var host = document.querySelector("[data-quotes]");
+    var empty = document.querySelector("[data-quotes-empty]");
+    var list = L().quotes || [];
+    host.textContent = "";
+    empty.hidden = list.length > 0;
+    list.forEach(function (q) {
+      var card = el("div", "quote");
+      card.appendChild(el("p", null, q.text));
+      card.appendChild(el("cite", null, q.name));
+      host.appendChild(card);
+    });
+  }
+
+  function renderSocials() {
+    var host = document.querySelector("[data-socials]");
+    host.textContent = "";
+    B.socials.forEach(function (s) {
+      if (!s.url) return;                 // no url → no link, no empty icon
+      var a = el("a", null, s.label);
+      a.href = s.url;
+      a.target = "_blank";
+      a.rel = "noopener";
+      host.appendChild(a);
+    });
+  }
+
+  /* License slot: prints the number only if one has actually been entered. */
+  function renderLicense() {
+    var value = document.querySelector("[data-license-value]");
+    var empty = document.querySelector("[data-license-empty]");
+    var num = (B.license.number || "").trim();
+    var has = num.length > 0;
+    value.hidden = !has;
+    empty.hidden = has;
+    if (has) value.textContent = (B.license.type ? B.license.type + " · " : "") + num;
+    else if (DRAFT.enabled && !empty.querySelector(".flag")) flag(empty);
+  }
+
+  /* Structured data for Google, built from the same CONTENT values. */
+  function renderJsonLd() {
+    var data = {
+      "@context": "https://schema.org",
+      "@type": "ChildCare",
+      name: B.name,
+      description: L().docDescription,
+      telephone: B.phoneDial,
+      url: location.href.split("#")[0],
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: B.street,
+        addressLocality: B.city,
+        addressRegion: B.state,
+        postalCode: B.zip,
+        addressCountry: "US",
+      },
+      openingHoursSpecification: B.hours.filter(function (r) { return !r.closed; }).map(function (r) {
+        var names = { 0: "Sunday", 1: "Monday", 2: "Tuesday", 3: "Wednesday", 4: "Thursday", 5: "Friday", 6: "Saturday" };
+        return {
+          "@type": "OpeningHoursSpecification",
+          dayOfWeek: r.days.map(function (d) { return names[d]; }),
+          opens: pad(r.open), closes: pad(r.close),
+        };
+      }),
+    };
+    var tag = document.getElementById("jsonld") || (function () {
+      var s = document.createElement("script");
+      s.type = "application/ld+json";
+      s.id = "jsonld";
+      document.head.appendChild(s);
+      return s;
+    })();
+    tag.textContent = JSON.stringify(data);
+  }
+
+  function pad(hm) {
+    return (hm[0] < 10 ? "0" + hm[0] : hm[0]) + ":" + (hm[1] < 10 ? "0" + hm[1] : hm[1]);
+  }
+
+  /* ---------- language ---------- */
+
+  function each(sel, fn) {
+    Array.prototype.forEach.call(document.querySelectorAll(sel), fn);
+  }
+
+  function render() {
+    document.documentElement.lang = L().htmlLang;
+    document.title = L().docTitle;
+
+    var meta = document.querySelector('meta[name="description"]') || (function () {
+      var m = document.createElement("meta");
+      m.name = "description";
+      document.head.appendChild(m);
+      return m;
+    })();
+    meta.content = L().docDescription;
+
+    each("[data-t]", function (n) {
+      n.textContent = lookup(n.getAttribute("data-t"));
+      if (n.hasAttribute("data-flag")) flag(n);
+    });
+    each("[data-t-aria]", function (n) { n.setAttribute("aria-label", lookup(n.getAttribute("data-t-aria"))); });
+    each("[data-address]", function (n) { n.textContent = addressLine(); });
+    each("[data-copyright]", function (n) {
+      n.textContent = "© " + new Date().getFullYear() + " " + B.name + ". " + L().footerRights;
+    });
+
+    each("[data-cta]", function (n) {
+      var kind = n.getAttribute("data-cta");
+      // Email is hidden entirely until an address is confirmed.
+      if (kind === "email") {
+        var holder = n.parentElement && n.parentElement.tagName === "P" ? n.parentElement : n;
+        holder.hidden = !B.email;
+        if (!B.email) return;
+      }
+      n.href = ctaHref(kind);
+    });
+
+    each(".ph[data-img]", function (box) {
+      fillPhoto(box, box.getAttribute("data-img"), lookup(box.getAttribute("data-t-alt")), lookup(box.getAttribute("data-t-missing")));
+    });
+
+    each("[data-lang]", function (b) {
+      b.setAttribute("aria-pressed", String(b.getAttribute("data-lang") === lang));
+    });
+
+    var banner = document.getElementById("draftBanner");
+    banner.hidden = !DRAFT.enabled;
+    banner.textContent = L().draftBanner;
+
+    document.getElementById("skipLink").textContent = L().skipToContent;
+
+    renderHours();
+    renderStatus();
+    renderGallery();
+    renderPrograms();
+    renderQuotes();
+    renderSocials();
+    renderLicense();
+    renderJsonLd();
+  }
+
+  function setLang(next, remember) {
+    lang = CONTENT[next] ? next : "en";
+    // Remembers the visitor's choice, so the toggle isn't a per-page-load chore.
+    if (remember) { try { localStorage.setItem("mfd-lang", lang); } catch (e) {} }
+    render();
+  }
+
+  /* Language on first load:
+     1. a choice made on a previous visit wins
+     2. otherwise Spanish if the browser is set to Spanish
+     3. otherwise English (the default)
+     The toggle is always on screen either way. */
+  function initialLang() {
+    var saved = null;
+    try { saved = localStorage.getItem("mfd-lang"); } catch (e) {}
+    if (saved && CONTENT[saved]) return saved;
+    var nav = (navigator.language || navigator.userLanguage || "en").toLowerCase();
+    return nav.indexOf("es") === 0 ? "es" : "en";
+  }
+
+  each("[data-lang]", function (b) {
+    b.addEventListener("click", function () { setLang(b.getAttribute("data-lang"), true); });
+  });
+
+  document.getElementById("skipLink").addEventListener("focus", function () { this.style.left = "20px"; });
+  document.getElementById("skipLink").addEventListener("blur", function () { this.style.left = "-9999px"; });
+
+  var header = document.getElementById("siteHeader");
+  addEventListener("scroll", function () {
+    header.classList.toggle("is-stuck", scrollY > 8);
+  }, { passive: true });
+
+  setLang(initialLang(), false);
+  setInterval(renderStatus, 60000); // keep open/closed honest if the page stays open
+})();
+</script>
+
+</body>
+</html>
