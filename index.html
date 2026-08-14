@@ -192,6 +192,15 @@
 
   /* ---------- the space ---------- */
   .space{background:linear-gradient(180deg,var(--cream) 0%,var(--cream-deep) 42%,var(--cream) 100%)}
+  /* Grouped gallery: outdoors first, then rooms, then the infant room. */
+  .g-group + .g-group{margin-top:40px}
+  .g-group-title{
+    font-size:clamp(20px,3.6vw,25px);
+    display:flex;align-items:center;gap:12px;
+  }
+  .g-group-title::after{content:"";flex:1;height:2px;border-radius:2px;background:var(--line)}
+  .g-group-intro{color:var(--muted);margin:8px 0 0;max-width:60ch}
+  .g-group .gallery{margin-top:18px}
   .gallery{display:grid;gap:14px}
   .g-item{background:var(--card);border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow-md);border:1px solid var(--line)}
   .g-item .ph{aspect-ratio:4/3}
@@ -228,6 +237,15 @@
     box-shadow:0 6px 16px rgba(122,88,201,.28);
   }
   .p-highlight svg{width:17px;height:17px;flex:none}
+  /* Photo at the top of a program card, showing that age group's own room. */
+  .p-photo{
+    aspect-ratio:4/3;border-radius:var(--r-md);overflow:hidden;
+    margin:-4px 0 16px;border:1px solid var(--line);
+  }
+
+  /* House-from-the-street shot beside the directions button. */
+  .contact-photo{margin:24px 0 0}
+  .contact-photo .ph{aspect-ratio:16/10;border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--line)}
   .p-list{margin:14px 0 0;padding:0;list-style:none;display:grid;gap:8px;font-size:15.5px}
   .p-list li{display:flex;gap:9px;align-items:flex-start;color:var(--muted)}
   .p-list li::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--leaf);flex:none;margin-top:8px}
@@ -338,6 +356,7 @@
     .hero-cta .btn{width:auto}
     .glance{grid-template-columns:repeat(2,1fr)}
     .gallery{grid-template-columns:repeat(2,1fr)}
+    .g-item.is-lead{grid-column:1 / -1}
     .programs{grid-template-columns:repeat(2,1fr)}
     .contact-actions{grid-template-columns:repeat(2,1fr)}
     .quotes{grid-template-columns:repeat(2,1fr)}
@@ -352,12 +371,13 @@
     .hero{padding:56px 0 76px}
     .hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:46px;align-items:center}
     .hero-photo{margin-top:0}
-    .hero-photo .ph{aspect-ratio:3/4;max-height:520px}
+    /* The photos are landscape, so keep the hero frame landscape too. */
+    .hero-photo .ph{aspect-ratio:4/3;max-height:520px}
     .glance{grid-template-columns:repeat(4,1fr)}
     .g-card{flex-direction:column;gap:14px}
     .gallery{grid-template-columns:repeat(2,1fr)}
-    .gallery .g-item:first-child{grid-column:1 / -1}
-    .gallery .g-item:first-child .ph{aspect-ratio:16/9}
+    .g-item.is-lead{grid-column:1 / -1}
+    .g-item.is-lead .ph{aspect-ratio:16/9}
     .programs{grid-template-columns:repeat(3,1fr)}
     .quotes{grid-template-columns:repeat(3,1fr)}
     .f-grid{grid-template-columns:1.3fr 1fr 1fr}
@@ -441,10 +461,27 @@ const CONTENT = {
      Compress first: aim under ~300KB each.
      ------------------------------------------------------------------- */
   images: {
-    fachada:    "assets/fachada.jpg",           // front of the house from the street
-    salonBebes: "assets/salon-bebes.jpg",       // infant room, cribs
-    salonMain:  "assets/salon-principal.jpg",   // main room, jungle/tree wall motif
-    patio:      "assets/patio.jpg",             // covered patio, shade sails, play equipment
+    // --- outdoor: the strongest asset, so it leads the page ---
+    patioGeneral:   "assets/patio-general.jpg",    // whole back yard under blue shade sails: playhouse, slide, tables, turf
+    patioMesaAgua:  "assets/patio-mesa-agua.jpg",  // shade sails overhead, water table in front, playhouse and ride-ons behind
+    patioCasita:    "assets/patio-casita.jpg",     // playhouse, adirondack chairs and the row of ride-on cars
+    patioMesas:     "assets/patio-mesas.jpg",      // covered patio: kid tables and chairs, toy shop, gazebo
+    patioJuguetes:  "assets/patio-juguetes.jpg",   // side patio with the toy shelves and the long green table
+
+    // --- indoor rooms ---
+    salonMain:      "assets/salon-principal.jpg",  // main room: tree wall, tables, alphabet rugs, "ALL ARE WELCOME" wall
+    salonCocinita:  "assets/salon-cocinita.jpg",   // main room from the other side: play kitchen, tree, reading area
+    salonCubbies:   "assets/salon-cubbies.jpg",    // cubby shelf, tv, painted tree decal, play kitchen
+    rinconLectura:  "assets/rincon-lectura.jpg",   // reading corner under the paper tree, Maya Family Daycare banner
+
+    // --- infant room ---
+    salonBebes:     "assets/salon-bebes.jpg",           // infant room wide: cribs, changing table, jungle decals
+    salonBebesCunas:"assets/salon-bebes-cunas.jpg",     // cribs, high chair, dinosaur wall, play mat
+    salonBebesCamb: "assets/salon-bebes-cambiador.jpg", // changing table, cubbies, high chair
+
+    // --- the house ---
+    fachada:        "assets/fachada.jpg",          // front of the house from across the street
+    fachadaCalle:   "assets/fachada-calle.jpg",    // front of the house, closer, from the sidewalk
   },
 
   /* -------------------------------------------------------------------
@@ -469,6 +506,8 @@ const CONTENT = {
     heroSub: "Cuidado en un hogar de familia en Palmdale, desde recién nacidos de dos semanas hasta los 12 años. Días con rutina, comidas caseras, ayuda con la tarea y un patio con sombra para jugar afuera.",
     heroPhotoAlt: "Frente de la casa de Maya Family Daycare en Palmdale",
     heroPhotoMissing: "FOTO PENDIENTE — frente de la casa (assets/fachada.jpg)",
+    contactPhotoAlt: "La casa vista desde la banqueta, con lugar para estacionarse",
+    contactPhotoMissing: "FOTO PENDIENTE — la casa desde la calle (assets/fachada-calle.jpg)",
     openNow: "Abierto ahora",
     closedNow: "Cerrado ahora",
     opensAt: "Abre a las",
@@ -508,34 +547,92 @@ const CONTENT = {
     spaceKicker: "El espacio",
     spaceTitle: "Adentro con calma, afuera con sombra",
     spaceLead: "La casa está preparada para niños: cuartos separados para los bebés y para los grandes, y un patio cubierto donde se puede jugar afuera aunque el sol de Palmdale esté pegando fuerte.",
-    photos: [
+    /* Las fotos van por grupos. El patio va primero a propósito: es lo más
+       fuerte que tiene. La foto con lead:true sale grande, ancho completo. */
+    photoGroups: [
       {
-        image: "patio",
-        alt: "Patio cubierto con velas de sombra y juegos al aire libre",
-        missing: "FOTO PENDIENTE — patio con sombra (assets/patio.jpg)",
-        title: "Patio con sombra",
-        caption: "Velas de sombra sobre el patio cubierto, casita de juegos, carritos y mesa de agua. En el verano del Antelope Valley, la sombra es lo que hace posible salir a jugar.",
+        title: "Afuera",
+        intro: "Casi todo el patio está bajo sombra. Por eso aquí se puede salir a jugar hasta en pleno verano.",
+        photos: [
+          {
+            image: "patioGeneral", lead: true,
+            alt: "Patio trasero completo bajo velas de sombra azules, con casita de juegos, resbaladero y mesas",
+            title: "El patio entero",
+            caption: "Velas de sombra sobre casi todo el patio: casita, resbaladero, mesas y espacio para correr. En el verano del Antelope Valley, la sombra es lo que hace posible salir a jugar.",
+          },
+          {
+            image: "patioMesaAgua",
+            alt: "Mesa de agua bajo las velas de sombra, con la casita y los carritos atrás",
+            title: "La mesa de agua",
+            caption: "Los días de calor se llena la mesa de agua y ahí se les va la tarde — sin salirse de la sombra.",
+          },
+          {
+            image: "patioCasita",
+            alt: "Casita de juegos, sillas y fila de carritos para montar",
+            title: "La casita y los carritos",
+            caption: "La casita, las sillas para descansar tantito y la fila de carritos para montar.",
+          },
+          {
+            image: "patioMesas",
+            alt: "Patio cubierto con mesas y sillas de niño y una tiendita de juguete",
+            title: "El patio cubierto",
+            caption: "Mesas y sillas de su tamaño, bajo techo, para las actividades y la merienda al aire libre.",
+          },
+          {
+            image: "patioJuguetes",
+            alt: "Repisas con juguetes de exterior junto a una mesa larga",
+            title: "Todo en su lugar",
+            caption: "Los juguetes de afuera tienen su repisa. Los niños los sacan y los guardan solos.",
+          },
+        ],
       },
       {
-        image: "salonBebes",
-        alt: "Cuarto de bebés con cunas",
-        missing: "FOTO PENDIENTE — cuarto de bebés (assets/salon-bebes.jpg)",
-        title: "Cuarto de bebés",
-        caption: "Cunas en un cuarto aparte, tranquilo, para que los bebés duerman su siesta sin el ruido de los grandes.",
+        title: "Los salones",
+        intro: "Adentro hay lugar para las actividades, para la tarea y para sentarse a leer sin ruido.",
+        photos: [
+          {
+            image: "salonMain",
+            alt: "Salón principal con árbol en la pared, mesas y tapetes de letras",
+            title: "El salón principal",
+            caption: "El árbol de la pared es donde pasa casi todo: las actividades, los cuentos y la mesa de la tarea.",
+          },
+          {
+            image: "salonCocinita",
+            alt: "Área de cocinita de juguete y mural que dice ALL ARE WELCOME",
+            title: "La cocinita",
+            caption: "El área de juego donde cocinan, sirven y se inventan historias toda la mañana.",
+          },
+          {
+            image: "salonCubbies",
+            alt: "Mueble de cubbies, televisión y árbol pintado en la pared",
+            title: "Los cubbies",
+            caption: "Cada niño tiene su espacio para la mochila, el suéter y lo que trae de casa.",
+          },
+          {
+            image: "rinconLectura",
+            alt: "Rincón de lectura con librero, sillones pequeños y el letrero de Maya Family Daycare",
+            title: "El rincón de lectura",
+            caption: "Un rincón tranquilo, con libros a su altura y sillones chiquitos para sentarse a ver un cuento.",
+          },
+        ],
       },
       {
-        image: "salonMain",
-        alt: "Salón principal con mural de árboles y selva en la pared",
-        missing: "FOTO PENDIENTE — salón principal (assets/salon-principal.jpg)",
-        title: "Salón principal",
-        caption: "El mural de árboles en la pared es donde pasa casi todo: juego, actividades, cuentos y la mesa de la tarea.",
-      },
-      {
-        image: "fachada",
-        alt: "Frente de la casa",
-        missing: "FOTO PENDIENTE — frente de la casa (assets/fachada.jpg)",
-        title: "La casa",
-        caption: "Una casa de familia en un vecindario tranquilo de Palmdale, con lugar para estacionarse al dejar y recoger.",
+        title: "El cuarto de bebés",
+        intro: "Los bebés tienen su propio cuarto, con puerta de seguridad, aparte del ruido de los grandes.",
+        photos: [
+          {
+            image: "salonBebes",
+            alt: "Cuarto de bebés con cunas, cambiador y calcomanías de animales en la pared",
+            title: "El cuarto de bebés",
+            caption: "Cunas, cambiador y tapete de juego en un cuarto aparte, para que los bebés duerman su siesta tranquilos.",
+          },
+          {
+            image: "salonBebesCamb",
+            alt: "Cambiador de madera con cajones y silla alta al lado",
+            title: "El cambiador",
+            caption: "El área de cambio, con todo a la mano y las cosas de cada bebé separadas.",
+          },
+        ],
       },
     ],
     spaceChips: ["Velas de sombra", "Patio cubierto", "Casita de juegos", "Mesa de agua", "Carritos para montar", "Cunas"],
@@ -547,6 +644,8 @@ const CONTENT = {
     programs: [
       {
         age: "Bebés y niños pequeños",
+        image: "salonBebesCunas",
+        imageAlt: "Cunas en el cuarto de bebés, con silla alta y tapete de juego",
         highlight: "Desde las 2 semanas de nacido",
         title: "Cuando su licencia se acaba antes de tiempo",
         body: "Casi ninguna guardería recibe bebés antes de las seis semanas. Aquí sí, desde las dos semanas. Si tiene que volver al trabajo antes de lo que quisiera, no se va a quedar buscando quién le cuide al bebé.",
@@ -625,6 +724,8 @@ const CONTENT = {
     heroSub: "Home-based child care in Palmdale, taking newborns from two weeks old through age 12. Steady daily routines, home-cooked meals, homework help, and a shaded yard for playing outside.",
     heroPhotoAlt: "Front of the Maya Family Daycare house in Palmdale",
     heroPhotoMissing: "PHOTO PENDING — front of the house (assets/fachada.jpg)",
+    contactPhotoAlt: "The house seen from the sidewalk, with room to park out front",
+    contactPhotoMissing: "PHOTO PENDING — the house from the street (assets/fachada-calle.jpg)",
     openNow: "Open now",
     closedNow: "Closed now",
     opensAt: "Opens at",
@@ -664,34 +765,92 @@ const CONTENT = {
     spaceKicker: "The space",
     spaceTitle: "Calm inside, shaded outside",
     spaceLead: "The house is set up for kids: separate rooms for babies and for the older ones, and a covered patio that makes outdoor play possible even when the Palmdale sun is brutal.",
-    photos: [
+    /* Photos are grouped. The yard comes first on purpose — it's the
+       strongest thing she has. The photo with lead:true runs full width. */
+    photoGroups: [
       {
-        image: "patio",
-        alt: "Covered patio with shade sails and outdoor play equipment",
-        missing: "PHOTO PENDING — shaded patio (assets/patio.jpg)",
-        title: "The shaded yard",
-        caption: "Shade sails over a covered patio, a playhouse, ride-on toys, and a water table. In an Antelope Valley summer, shade is what makes outdoor play possible at all.",
+        title: "Outside",
+        intro: "Almost the whole yard sits under shade. That's what makes going outside possible here, even at the height of summer.",
+        photos: [
+          {
+            image: "patioGeneral", lead: true,
+            alt: "The full back yard under blue shade sails, with a playhouse, slide and kid-sized tables",
+            title: "The whole yard",
+            caption: "Shade sails over nearly the entire yard: playhouse, slide, tables, and room to run. In an Antelope Valley summer, shade is what makes outdoor play possible at all.",
+          },
+          {
+            image: "patioMesaAgua",
+            alt: "Water table under the shade sails, with the playhouse and ride-on cars behind it",
+            title: "The water table",
+            caption: "On hot days the water table gets filled and that's where the afternoon goes — without ever leaving the shade.",
+          },
+          {
+            image: "patioCasita",
+            alt: "Playhouse, patio chairs and a row of ride-on cars",
+            title: "The playhouse and the ride-ons",
+            caption: "The playhouse, chairs for catching a breath, and the row of ride-on cars.",
+          },
+          {
+            image: "patioMesas",
+            alt: "Covered patio with kid-sized tables and chairs and a toy shop",
+            title: "The covered patio",
+            caption: "Tables and chairs their own size, under a roof, for activities and snack outdoors.",
+          },
+          {
+            image: "patioJuguetes",
+            alt: "Shelves of outdoor toys beside a long green table",
+            title: "Everything in its place",
+            caption: "The outdoor toys have their own shelf. The kids take them out and put them back themselves.",
+          },
+        ],
       },
       {
-        image: "salonBebes",
-        alt: "Infant room with cribs",
-        missing: "PHOTO PENDING — infant room (assets/salon-bebes.jpg)",
+        title: "The rooms",
+        intro: "Inside there's room for activities, for homework, and for sitting down with a book away from the noise.",
+        photos: [
+          {
+            image: "salonMain",
+            alt: "Main room with a tree on the wall, tables and alphabet rugs",
+            title: "The main room",
+            caption: "The tree on the wall is where most of the day happens: activities, story time, and the homework table.",
+          },
+          {
+            image: "salonCocinita",
+            alt: "Play kitchen area and an ALL ARE WELCOME wall display",
+            title: "The play kitchen",
+            caption: "The corner where they cook, serve, and invent whole storylines all morning.",
+          },
+          {
+            image: "salonCubbies",
+            alt: "Cubby shelf, television and a painted tree on the wall",
+            title: "The cubbies",
+            caption: "Every child has their own spot for a backpack, a sweater, and whatever came from home.",
+          },
+          {
+            image: "rinconLectura",
+            alt: "Reading corner with a book rack, small armchairs and the Maya Family Daycare banner",
+            title: "The reading corner",
+            caption: "A quiet corner with books at their height and small chairs to sit and get through a story.",
+          },
+        ],
+      },
+      {
         title: "The infant room",
-        caption: "Cribs in their own quiet room, so babies can nap without the noise of the older kids.",
-      },
-      {
-        image: "salonMain",
-        alt: "Main room with a painted tree and jungle wall mural",
-        missing: "PHOTO PENDING — main room (assets/salon-principal.jpg)",
-        title: "The main room",
-        caption: "The painted tree wall is where most of the day happens: play, activities, story time, and the homework table.",
-      },
-      {
-        image: "fachada",
-        alt: "Front of the house",
-        missing: "PHOTO PENDING — front of the house (assets/fachada.jpg)",
-        title: "The house",
-        caption: "A family home on a quiet Palmdale street, with room to park at drop-off and pick-up.",
+        intro: "Babies get their own room, behind a safety gate, away from the noise of the older kids.",
+        photos: [
+          {
+            image: "salonBebes",
+            alt: "Infant room with cribs, changing table and animal wall decals",
+            title: "The infant room",
+            caption: "Cribs, a changing table and a play mat in a room of their own, so babies can nap in peace.",
+          },
+          {
+            image: "salonBebesCamb",
+            alt: "Wooden changing table with drawers and a high chair beside it",
+            title: "The changing station",
+            caption: "The changing area, everything within reach and each baby's things kept separate.",
+          },
+        ],
       },
     ],
     spaceChips: ["Shade sails", "Covered patio", "Playhouse", "Water table", "Ride-on toys", "Cribs"],
@@ -703,6 +862,8 @@ const CONTENT = {
     programs: [
       {
         age: "Infants & toddlers",
+        image: "salonBebesCunas",
+        imageAlt: "Cribs in the infant room, with a high chair and play mat",
         highlight: "Newborns from 2 weeks old",
         title: "For when leave ends sooner than you'd like",
         body: "Most day cares won't take a baby before six weeks. This one starts at two. If you have to be back at work sooner than you planned, you won't be left scrambling to find someone who'll take a newborn.",
@@ -855,7 +1016,8 @@ const CONTENT = {
       <span class="kicker" data-t="spaceKicker"></span>
       <h2 data-t="spaceTitle"></h2>
       <p class="lead" data-t="spaceLead"></p>
-      <div class="gallery" data-gallery></div>
+      <!-- Groups are built by renderGallery; each one holds its own .gallery grid. -->
+      <div class="gallery-groups" data-gallery></div>
       <ul class="feature-chips" data-chips></ul>
     </div>
   </section>
@@ -915,6 +1077,10 @@ const CONTENT = {
         <a class="btn btn-ghost btn-block" data-cta="email" data-t="ctaEmail" href="#"></a>
       </div>
       <p class="contact-hint" data-t="contactHint"></p>
+      <!-- The house from the street, so a parent knows what to look for. -->
+      <figure class="contact-photo">
+        <div class="ph" data-img="fachadaCalle" data-t-alt="contactPhotoAlt" data-t-missing="contactPhotoMissing"><img alt=""></div>
+      </figure>
     </div>
   </section>
 
@@ -1078,7 +1244,8 @@ const CONTENT = {
   function newPhoto(spec) {
     var box = el("div", "ph");
     box.appendChild(document.createElement("img"));
-    fillPhoto(box, spec.image, spec.alt, spec.missing);
+    // No explicit `missing` label on a photo → fall back to its alt text.
+    fillPhoto(box, spec.image, spec.alt, spec.missing || spec.alt);
     return box;
   }
 
@@ -1147,17 +1314,30 @@ const CONTENT = {
     });
   }
 
+  /* The gallery is grouped, not one flat grid: outdoors first and largest,
+     then the rooms, then the infant room. A photo marked lead:true runs the
+     full width of its group. */
   function renderGallery() {
     var host = document.querySelector("[data-gallery]");
     host.textContent = "";
-    L().photos.forEach(function (spec) {
-      var fig = el("figure", "g-item");
-      fig.appendChild(newPhoto(spec));
-      var cap = el("figcaption");
-      cap.appendChild(el("b", null, spec.title));
-      cap.appendChild(document.createTextNode(spec.caption));
-      fig.appendChild(cap);
-      host.appendChild(fig);
+
+    L().photoGroups.forEach(function (group) {
+      var section = el("div", "g-group");
+      section.appendChild(el("h3", "g-group-title", group.title));
+      if (group.intro) section.appendChild(el("p", "g-group-intro", group.intro));
+
+      var grid = el("div", "gallery");
+      group.photos.forEach(function (spec) {
+        var fig = el("figure", "g-item" + (spec.lead ? " is-lead" : ""));
+        fig.appendChild(newPhoto(spec));
+        var cap = el("figcaption");
+        cap.appendChild(el("b", null, spec.title));
+        cap.appendChild(document.createTextNode(spec.caption));
+        fig.appendChild(cap);
+        grid.appendChild(fig);
+      });
+      section.appendChild(grid);
+      host.appendChild(section);
     });
 
     var chips = document.querySelector("[data-chips]");
@@ -1170,6 +1350,13 @@ const CONTENT = {
     host.textContent = "";
     L().programs.forEach(function (p) {
       var card = el("div", "p-card");
+      // An optional `image` puts the room this age group actually uses at the
+      // top of its card, rather than leaving all the photos in one gallery.
+      if (p.image) {
+        var shot = newPhoto({ image: p.image, alt: p.imageAlt });
+        shot.className = "ph p-photo";
+        card.appendChild(shot);
+      }
       // An optional `highlight` promotes the card and leads with a badge.
       if (p.highlight) {
         card.className = "p-card is-featured";
