@@ -24,6 +24,45 @@
 <!-- Static fallback title (business name only, so it can't drift out of sync
      with the copy). The full localized title is set from CONTENT by the script. -->
 <title>Maya Family Daycare</title>
+
+<!-- =====================================================================
+     SOCIAL PREVIEW (Open Graph) — what shows when the link is pasted into
+     WhatsApp, Messages, or Facebook.
+
+     These are the one block of copy that CANNOT come from the CONTENT object.
+     WhatsApp and Facebook scrapers do not run JavaScript; they read the raw
+     HTML and stop. Anything written here by the script would be invisible to
+     them, so these values are deliberately duplicated as static text.
+     If the wording below changes, change CONTENT.es.docTitle /
+     docDescription to match — they are meant to say the same thing.
+
+     They are also static in LANGUAGE: one page, one set of tags, so the
+     preview cannot follow the on-page toggle. They are in Spanish on purpose,
+     since she shares the link with Spanish-speaking parents.
+
+     Every URL here must be absolute. Relative paths are silently dropped by
+     every scraper — this is the single most common reason a preview card
+     comes out blank.
+     ===================================================================== -->
+<link rel="canonical" href="https://website-to-business.github.io/maya-family-daycare/">
+<meta property="og:type"        content="website">
+<meta property="og:site_name"   content="Maya Family Daycare">
+<meta property="og:url"         content="https://website-to-business.github.io/maya-family-daycare/">
+<meta property="og:title"       content="Maya Family Daycare — Cuidado infantil en casa en Palmdale, CA">
+<meta property="og:description" content="Cuidado en un hogar de familia en Palmdale: recién nacidos desde las 2 semanas hasta los 12 años. Comidas caseras, ayuda con la tarea y patio con sombra. Llame al (661) 313-8262.">
+<meta property="og:locale"      content="es_US">
+<meta property="og:locale:alternate" content="en_US">
+<meta property="og:image"            content="https://website-to-business.github.io/maya-family-daycare/assets/og-patio.jpg">
+<meta property="og:image:secure_url" content="https://website-to-business.github.io/maya-family-daycare/assets/og-patio.jpg">
+<meta property="og:image:type"   content="image/jpeg">
+<meta property="og:image:width"  content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt"    content="El patio de Maya Family Daycare, con velas de sombra, casita de juegos y juguetes para montar">
+<meta name="twitter:card"        content="summary_large_image">
+<meta name="twitter:title"       content="Maya Family Daycare — Cuidado infantil en casa en Palmdale, CA">
+<meta name="twitter:description" content="Cuidado en un hogar de familia en Palmdale: recién nacidos desde las 2 semanas hasta los 12 años. Comidas caseras, ayuda con la tarea y patio con sombra.">
+<meta name="twitter:image"       content="https://website-to-business.github.io/maya-family-daycare/assets/og-patio.jpg">
+
 <style>
   /* ---------------------------------------------------------------------
      Design tokens. The palette nods to the pink/purple/blue of the existing
@@ -373,7 +412,9 @@
     .hero-photo{margin-top:0}
     /* The photos are landscape, so keep the hero frame landscape too. */
     .hero-photo .ph{aspect-ratio:4/3;max-height:520px}
-    .glance{grid-template-columns:repeat(4,1fr)}
+    /* auto-fit rather than a fixed 4, so the row stays balanced when a card
+       is switched off (the subsidy card currently is). */
+    .glance{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
     .g-card{flex-direction:column;gap:14px}
     .gallery{grid-template-columns:repeat(2,1fr)}
     .g-item.is-lead{grid-column:1 / -1}
@@ -402,7 +443,7 @@
    fake can quietly go live. Set to false once the questionnaire comes back
    and the [PLACEHOLDER] copy has been replaced. */
 const DRAFT = {
-  enabled: true,
+  enabled: false,
 };
 
 const CONTENT = {
@@ -453,6 +494,38 @@ const CONTENT = {
        routes correctly. Cleared by the owner for publication, so the full
        street address is shown. */
     showStreetAddress: true,
+
+    /* The "About Maya" / "Sobre Maya" section.
+       Off, because there is no confirmed copy for it — the owner has not sent
+       her own description yet, and nothing is expected for now. An empty
+       section reads worse than no section, so it is hidden rather than shown
+       with placeholder text.
+
+       The markup and every es/en string for it are still in this file,
+       untouched. Set this to true once she provides her details and the
+       [PLACEHOLDER] copy in aboutBody / aboutMissing has been replaced —
+       nothing else needs changing. */
+    showAboutSection: false,
+
+    /* The reviews / testimonials section.
+       Off, because she has no Google reviews yet. Same reasoning: an empty
+       "what parents say" section actively hurts, since it advertises that
+       nobody has said anything.
+
+       The markup and strings stay in the file. Set this to true once two or
+       three real reviews exist and have been added to the `quotes` array in
+       both languages. Never fill that array with invented quotes. */
+    showQuotesSection: false,
+
+    /* The "Help paying" / subsidy card in the At a glance row.
+       Off, because her CCRC contract status is not confirmed. The card cannot
+       say anything true yet — and "to be confirmed" is not information a
+       parent can use.
+
+       Set to true once the answer is known, and edit glanceHelpValue /
+       glanceHelpNote in both languages to state it plainly, e.g. "Acepta pagos
+       de CCRC" or "Pago particular". */
+    showSubsidyCard: false,
   },
 
   /* -------------------------------------------------------------------
@@ -482,6 +555,13 @@ const CONTENT = {
     // --- the house ---
     fachada:        "assets/fachada.jpg",          // front of the house from across the street
     fachadaCalle:   "assets/fachada-calle.jpg",    // front of the house, closer, from the sidewalk
+
+    /* Social preview card, 1200x630, cropped from the yard photo. Not used
+       anywhere on the page — it is referenced by the og:image tag in <head>,
+       which needs an absolute URL and so cannot read this object. Listed here
+       so the file is not mistaken for an orphan. Replacing it means keeping
+       both the filename AND the 1200x630 size. */
+    ogCard:         "assets/og-patio.jpg",
   },
 
   /* -------------------------------------------------------------------
@@ -997,7 +1077,9 @@ const CONTENT = {
           </div>
         </div>
 
-        <div class="g-card">
+        <!-- Subsidy / "Help paying" card. Switched off by settings.showSubsidyCard
+             until her CCRC status is confirmed. -->
+        <div class="g-card" data-section="showSubsidyCard">
           <span class="g-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18v11H3z"/><path d="M3 11h18"/><path d="M7 15h3"/></svg></span>
           <div>
             <div class="g-label" data-t="glanceHelpLabel"></div>
@@ -1038,12 +1120,17 @@ const CONTENT = {
       <span class="kicker" data-t="mealsKicker"></span>
       <h2 data-t="mealsTitle"></h2>
       <p class="lead" data-t="mealsBody"></p>
-      <p class="lead" data-t="mealsPlaceholder" data-flag></p>
+      <!-- Working note to the repo owner, not parent-facing copy. Shows only
+           while DRAFT.enabled is true. -->
+      <p class="lead" data-t="mealsPlaceholder" data-flag data-draft-only></p>
     </div>
   </section>
 
-  <!-- ABOUT THE OWNER -->
-  <section class="section" id="about">
+  <!-- ABOUT THE OWNER
+       Kept in the page but switched off by settings.showAboutSection until the
+       owner supplies her own description. Nothing here needs rebuilding to
+       bring it back — just flip the flag. -->
+  <section class="section" id="about" data-section="showAboutSection">
     <div class="wrap">
       <span class="kicker" data-t="aboutKicker"></span>
       <h2 data-t="aboutTitle" data-flag></h2>
@@ -1054,8 +1141,9 @@ const CONTENT = {
     </div>
   </section>
 
-  <!-- TESTIMONIALS -->
-  <section class="section" id="quotes">
+  <!-- TESTIMONIALS
+       Switched off by settings.showQuotesSection until real reviews exist. -->
+  <section class="section" id="quotes" data-section="showQuotesSection">
     <div class="wrap">
       <span class="kicker" data-t="quotesKicker"></span>
       <h2 data-t="quotesTitle" data-flag></h2>
@@ -1371,7 +1459,8 @@ const CONTENT = {
       var ul = el("ul", "p-list");
       p.points.forEach(function (pt) { ul.appendChild(el("li", null, pt)); });
       card.appendChild(ul);
-      if (p.note) {
+      // Same as the meals note: a question for the repo owner, not copy.
+      if (p.note && DRAFT.enabled) {
         var note = el("p", "lead", p.note);
         note.style.fontSize = "14.5px";
         note.style.marginTop = "14px";
@@ -1487,6 +1576,17 @@ const CONTENT = {
     });
     each("[data-t-aria]", function (n) { n.setAttribute("aria-label", lookup(n.getAttribute("data-t-aria"))); });
     each("[data-address]", function (n) { n.textContent = addressLine(); });
+
+    /* Sections that are built but switched off in CONTENT.settings. `hidden`
+       collapses them entirely, so no padding or margin is left behind. */
+    each("[data-section]", function (n) {
+      n.hidden = !CONTENT.settings[n.getAttribute("data-section")];
+    });
+
+    /* Working notes addressed to whoever maintains this file — never parent
+       facing. They exist only to be answered and replaced, so they disappear
+       with the rest of the draft scaffolding. */
+    each("[data-draft-only]", function (n) { n.hidden = !DRAFT.enabled; });
     each("[data-copyright]", function (n) {
       n.textContent = "© " + new Date().getFullYear() + " " + B.name + ". " + L().footerRights;
     });
