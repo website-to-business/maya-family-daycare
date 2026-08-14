@@ -23,9 +23,11 @@ Pulled from the business's public Google Business Profile.
 | Name | Maya Family Daycare |
 | Address | 5051 Bell Ave, Palmdale, CA 93552 |
 | Phone | (661) 313-8262 |
-| Hours | Mon–Thu 7:00 AM – 5:30 PM · Fri 7:30 AM – 5:30 PM · Sat/Sun closed |
+| Email | mayafamilydaycare@gmail.com |
+| License # | **197701136** — confirmed by the owner, already public on her own flyer |
+| Hours | Mon–Fri 7:00 AM – 5:30 PM · Sat/Sun closed |
 | Services listed | Educational services, homework assistance, meal preparation, rest periods |
-| Age range | Infants (cribs on site) through school-age (homework help) |
+| Age range | **2 weeks to 12 years** — confirmed on her flyer |
 
 **Do not invent:** license number, license type, prices, staff names, credentials, years in business, testimonials, review counts, capacity, or anything about specific children. If a section needs one of these, use an obvious placeholder and flag it.
 
@@ -33,22 +35,23 @@ Pulled from the business's public Google Business Profile.
 
 ## Hard constraints
 
-### License number
-California requires licensed child care to display its license number, and parents look for it. **The owner has not confirmed her license number or type yet.**
+### License number — RESOLVED
+The owner supplied it directly: **197701136**. It also already appears on her own printed flyer, so it is public information by her choice.
 
-- Build a clean, reserved slot for it in the footer.
-- Leave it **empty** — do not invent a number, do not use a fake-looking one.
-- Mark it clearly in the code as awaiting real data.
+- Put it in the footer slot that was reserved for it.
+- California requires licensed child care to display the license number, and parents look for it — this is a trust signal, not fine print.
+- **License *type* is still unconfirmed** (Small vs. Large Family Child Care Home vs. Child Care Center). Do not state the type. The number alone is enough.
+- Verify the number against the CDSS Community Care Licensing public search before launch — a typo here is worse than an omission.
 
 ### Sensitive information
 Before publishing anything in these categories, it gets checked with the repo owner first:
 - License number
-- Exact street address (vs. just "Palmdale, CA")
+- ~~Exact street address~~ — **RESOLVED.** Her own flyer publishes 5051 Bell Ave, Palmdale, CA 93552. She distributes it herself, so the address can go on the site. The `settings.showStreetAddress` flag can be flipped to `true`.
 - Staff names or photos
 - Anything identifying specific children
 - Prices
 
-**No photographs of children.** Existing usable photos show rooms and outdoor space with no children's faces — keep it that way.
+**No photographs of children.** No image showing an identifiable child's face may be committed or used, under any circumstance. See the photo handling section — a committed image cannot be fully removed from a public repo's history.
 
 ---
 
@@ -84,7 +87,31 @@ Every key present in `es` must exist in `en` and vice versa.
 - Stable, descriptive, lowercase filenames — `patio.jpg`, not `IMG_2084.PNG`.
 - Each entry in `CONTENT.images` carries a comment saying what the photo shows.
 - **Replacement workflow:** to swap a photo, overwrite the file keeping the same filename. No HTML edit needed. Preserve this property — it's the whole point of the naming scheme.
-- Compress before committing. Phone photos are multi-megabyte; target under ~300KB each.
+
+### Photo handling — required before any image is committed
+
+The owner has supplied 14 real photos. They arrive as raw camera files with meaningless names and must be processed before use.
+
+**1. Look at every image.** Do not work from filenames. Open each one and identify what it actually shows before naming or placing it.
+
+**2. Screen for children's faces — hard stop.**
+No photograph showing a child's face may be committed, used, or referenced. If any image contains an identifiable child, flag it by filename, exclude it, and report it. Do not crop or blur to make it usable — exclude it and let the repo owner decide.
+
+This matters more than usual here: **once an image is committed and pushed to a public repo, it remains in git history permanently.** Deleting the file in a later commit does not remove it. There is no clean undo. Screen first.
+
+**3. Compress.** iPhone originals run 3–5MB. Fourteen of those makes a slow site on cell data, which is how nearly every visitor arrives. Target **under 300KB each, max 1600px wide**. `sips` is available on macOS and is sufficient:
+
+```bash
+sips -Z 1600 -s format jpeg -s formatOptions 70 input.jpg --out assets/output.jpg
+```
+
+**4. Rename descriptively.** Lowercase, hyphenated, describing content: `patio-cubierto.jpg`, `salon-bebes.jpg`, `fachada.jpg`, `area-lectura.jpg`.
+
+**5. Place each photo deliberately**, in the section it actually belongs to. Do not dump them into a generic gallery grid.
+
+**Priority guidance — the outdoor space leads.** The covered patio with shade sails, the playhouse, the ride-on toys, and the water table are the strongest assets she has. In Palmdale summer heat, shaded outdoor play is a genuine differentiator that most home daycares cannot offer. Give the outdoor photos prominence and room; don't bury them in a thumbnail row.
+
+Second priority: the infant room (cribs, changing table) and the main classroom, since those speak to the two distinct parent audiences.
 
 ---
 
@@ -135,7 +162,7 @@ No server, no database, no backend. These work on a static host and are the only
 1. **Hero** — name, one-line positioning, big Call button, language toggle.
 2. **At a glance** — hours, ages served, location, subsidy acceptance status.
 3. **The space** — photo-led. The outdoor area is the strongest asset: shade sails, covered patio, playhouse, ride-on toys, water table. In Palmdale summer heat, shaded outdoor play is a real differentiator — give it room.
-4. **Programs / ages** — the site must speak to two distinct parents: infant families and school-age families (homework help, after-school). Don't blur them together.
+4. **Programs / ages** — **2 weeks to 12 years.** Accepting infants from two weeks old is unusual and is a genuine differentiator — most centers start at 6 weeks or later, and parents returning from short leave struggle to find placement. Give it weight. At the other end, 12 years means after-school and homework help. The site must speak to two distinct parents and must not blur them together.
 5. **Meals** — meal preparation is offered; specifics TBD.
 6. **About the owner** — `[PLACEHOLDER]` until the questionnaire returns.
 7. **Testimonials** — `[PLACEHOLDER]`. She currently has zero Google reviews.
@@ -174,8 +201,12 @@ Final visual direction waits on the questionnaire's style section and any refere
 ## Open items
 
 - [ ] Owner returns the intake questionnaire (`cuestionario-daycare.html`)
-- [ ] Real photos, compressed and renamed into `assets/`
-- [ ] License type + number confirmed → fill the reserved footer slot
+- [x] License number confirmed — 197701136
+- [x] Street address cleared for publication
+- [x] Hours corrected — Mon–Fri 7:00–5:30 (owner fixed the Friday time on Google too)
+- [x] Age range confirmed — 2 weeks to 12 years
+- [ ] Real photos received (14 sent) — compress, rename, move into `assets/`. **Check every one for children's faces before committing.**
+- [ ] License *type* — still unknown, don't state it
 - [ ] Pricing decision — publish or "call for rates"
 - [ ] Subsidy/CCRC contract status confirmed
 - [ ] Google Business Profile category check — currently "Day care center," may need to be a Family Child Care Home
